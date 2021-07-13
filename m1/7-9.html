@@ -9,18 +9,24 @@
         [v-cloak] {
             display: none;
         }
+        span {
+            font-size: 12px;
+            color: gray;
+        }
     </style>
 </head>
 <body>
     <div id="app" v-cloak>
-        <div style="margin-bottom: 10px;">
+        <div>
             数字：<input type="number" v-model="number">
             进制：<input type="number" v-model="baseN">
+            {{valString}}
         </div>
-        <div>
-            <input type="submit" @click="base" value="10进制转换">
+        <span>(10进制转其他进制)</span>
+        <div style="margin-top: 10px;">
+            <input type="submit" @click="base" value="进制转换">
         </div>
-        {{valString}}
+       
     </div>
     <script src="../public/vue.js"></script>
     <script>
