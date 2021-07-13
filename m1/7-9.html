@@ -19,9 +19,7 @@
         </div>
         <div>
             <input type="submit" @click="base" value="10进制转换">
-            <input type="submit" @click="baseChange" value="n进制转换">
         </div>
-        
         {{valString}}
     </div>
     <script src="../public/vue.js"></script>
@@ -66,35 +64,6 @@
                         decimal = decimal.join('');
                         _this.valString += '.' + decimal;
                     }
-                },
-                baseChange() {
-                    var _this = this, num = '' + _this.number, n = _this.baseN, value = 0;
-
-                    var arr = num.split('.'), arr1;
-                  
-                    arr1 = _this.arrReverse(arr[0], n)
-                    
-                    for(let i = 0; i < arr1.length; i++) {
-                        value += arr1[i] * Math.pow(n, i);
-                    }
-                    // 如果有小数
-                    if (arr[1]) {
-                        var arr2 = _this.arrReverse(arr[1], n);
-                        for (let i = 1; i <= arr2.length; i++) {
-                            value += (arr2[i - 1] * Math.pow(n, i * -1));
-                        }
-                    }
-                    _this.valString = +(value).toFixed(6);
-                },
-                arrReverse(arr, n) {
-                    if (n > 10) {
-                        arr = arr.split('/').reverse();
-                    }
-                    else {
-                        arr = arr.split('').reverse();
-                    }
-
-                    return arr;
                 },
                 numPush(num, n) {
                     if (n > 10) {
