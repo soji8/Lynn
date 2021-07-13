@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    123123
+    <input type="text">
+    <script>
+        var a = 65.015625;
+        // radixTransform.change_64(a)
+        // test(a, 2);
+        function test(num, n = 64) {
+            var decimal = [], real = [];
+            var num1 = Math.floor(num), num2 = +(num - num1).toFixed(12);
+            while (num1 >= n) {
+                var result = Math.floor(num1 / n);
+                var remainder = num1 % n;
+                
+                if (n >= 10) {
+                    real.push('/' + remainder); 
+                }
+                else {
+                    real.push(remainder);
+                }
+                num1 = result;
+                if (num1 < n) {
+                    break;
+                }
+            }
+            real.push(num1);
+            real = (real.reverse()).join('');
+
+            // 小数计算
+            if (num2 > 0) {
+                while(num2 != 0) {
+                    if (decimal.length >= 12) {
+                        break;
+                    }
+                    var result = Math.floor(num2 * n);
+                    num2 = +(num2 * n - result).toFixed(12);
+                    if (n >= 10) {
+                        decimal.push('/' + result);
+                    }
+                    else {
+                        decimal.push(result);
+                    }
+                }
+                decimal = decimal.join('');
+            }
+            return real + '.' + decimal;
+        }
+
+        document.body.oncopy = (evt) => {
+            var selection = document.getSelection().toString();
+            console.log(evt)
+            evt.clipboardData.setData(
+                "text/plain",
+                "我要杀光光，我要杀光光"
+            )
+            evt.preventDefault();
+        }
+
+        document.body.onpaste = (evt) => {
+            var content = evt.clipboardData.getData("text/plain");
+            if (evt.clipboardData.items) {
+                evt.clipboardData.items.forEach((item) => {
+                    console.log(item)
+                    // let file = item.getAsFile();
+                    // console.log(file)
+                    // var reader = new FileReader();
+                })
+            }
+        }
+    </script>
+</body>
+</html>
