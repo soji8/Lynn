@@ -5,76 +5,108 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    123123
-    <input type="text">
+    <div id="app" v-cloak>
+        <div style="margin-bottom: 10px;">
+            数字：<input type="number" v-model="number">
+            进制：<input type="number" v-model="baseN">
+        </div>
+        <div>
+            <input type="submit" @click="base" value="10进制转换">
+            <input type="submit" @click="baseChange" value="n进制转换">
+        </div>
+        
+        {{valString}}
+    </div>
+    <script src="../public/vue.js"></script>
     <script>
-        var a = 65.015625;
-        // radixTransform.change_64(a)
-        // test(a, 2);
-        function test(num, n = 64) {
-            var decimal = [], real = [];
-            var num1 = Math.floor(num), num2 = +(num - num1).toFixed(12);
-            while (num1 >= n) {
-                var result = Math.floor(num1 / n);
-                var remainder = num1 % n;
-                
-                if (n >= 10) {
-                    real.push('/' + remainder); 
+        let app = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    number: 23,
+                    baseN: 2,
+                    valString: ''
                 }
-                else {
-                    real.push(remainder);
-                }
-                num1 = result;
-                if (num1 < n) {
-                    break;
-                }
-            }
-            real.push(num1);
-            real = (real.reverse()).join('');
-
-            // 小数计算
-            if (num2 > 0) {
-                while(num2 != 0) {
-                    if (decimal.length >= 12) {
-                        break;
+            },
+            methods: {
+                base() {
+                    var _this = this, num = _this.number, n = _this.baseN;
+                    var decimal = [], real = [];
+                    var num1 = Math.floor(num), num2 = +(num - num1).toFixed(12);
+                    while (num1 >= n) {
+                        var result = Math.floor(num1 / n);
+                        var remainder = num1 % n;
+                        // 进制小于10不需要分隔
+                        real.push(_this.numPush(remainder, n));
+                        num1 = result;
+                        if (num1 < n) {
+                            break;
+                        }
                     }
-                    var result = Math.floor(num2 * n);
-                    num2 = +(num2 * n - result).toFixed(12);
-                    if (n >= 10) {
-                        decimal.push('/' + result);
+                    real.push(num1);
+                    real = (real.reverse()).join('');
+                    _this.valString = real;
+                    // 小数计算
+                    if (num2 > 0) {
+                        while(num2 != 0) {
+                            if (decimal.length >= 12) {
+                                break;
+                            }
+                            var result = Math.floor(num2 * n);
+                            num2 = +(num2 * n - result).toFixed(12);
+                            decimal.push(_this.numPush(result, n))
+                        }
+                        decimal = decimal.join('');
+                        _this.valString += '.' + decimal;
+                    }
+                },
+                baseChange() {
+                    var _this = this, num = '' + _this.number, n = _this.baseN, value = 0;
+
+                    var arr = num.split('.'), arr1;
+                  
+                    arr1 = _this.arrReverse(arr[0], n)
+                    
+                    for(let i = 0; i < arr1.length; i++) {
+                        value += arr1[i] * Math.pow(n, i);
+                    }
+                    // 如果有小数
+                    if (arr[1]) {
+                        var arr2 = _this.arrReverse(arr[1], n);
+                        for (let i = 1; i <= arr2.length; i++) {
+                            value += (arr2[i - 1] * Math.pow(n, i * -1));
+                        }
+                    }
+                    _this.valString = +(value).toFixed(6);
+                },
+                arrReverse(arr, n) {
+                    if (n > 10) {
+                        arr = arr.split('/').reverse();
                     }
                     else {
-                        decimal.push(result);
+                        arr = arr.split('').reverse();
                     }
+
+                    return arr;
+                },
+                numPush(num, n) {
+                    if (n > 10) {
+                        num = '/' + num;
+                    }
+                    else {
+                        num = num;
+                    }
+                    return num;
                 }
-                decimal = decimal.join('');
             }
-            return real + '.' + decimal;
-        }
-
-        document.body.oncopy = (evt) => {
-            var selection = document.getSelection().toString();
-            console.log(evt)
-            evt.clipboardData.setData(
-                "text/plain",
-                "我要杀光光，我要杀光光"
-            )
-            evt.preventDefault();
-        }
-
-        document.body.onpaste = (evt) => {
-            var content = evt.clipboardData.getData("text/plain");
-            if (evt.clipboardData.items) {
-                evt.clipboardData.items.forEach((item) => {
-                    console.log(item)
-                    // let file = item.getAsFile();
-                    // console.log(file)
-                    // var reader = new FileReader();
-                })
-            }
-        }
+        });
     </script>
 </body>
 </html>
