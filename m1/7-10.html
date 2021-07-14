@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>转灰度图</title>
 </head>
 <body>
     <input type="file" id="imgFile" onchange="inputChange(this)" accept=".png, .jpg" />
@@ -17,10 +17,10 @@
     <script>
         var src = '';
 
+        /* 获取图片整合成可共用url */
         function inputChange(obj) {
             let _url = window.URL || window.webkitURL
             var file = obj.files[0];
-            var fs = new FileReader();
             src = document.getElementById('show').src = _url.createObjectURL(file);
         }
 
@@ -28,17 +28,18 @@
             if (src === '') {
                 return;
             }
-            var canvas = document.getElementById('canvas');
-            var ctx = canvas.getContext('2d');
+            /* 创建canvas */
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
             var img = new Image();
             img.src = src;
             canvas.height = img.height;
             canvas.width = img.width;
-            
             ctx.drawImage(img, 0, 0);
+
+            /* 获取图片数据、修改成灰度图，并重新绘制 */
             var imgdata = ctx.getImageData(0, 0, canvas.width, canvas.height);
             var data = imgdata.data;
-
             for (var i = 0, n = data.length; i < n; i += 4) {
                 var average = (data[i] + data[i + 1] + data[i + 2]) / 3;
                 data[i] = average;
@@ -48,6 +49,7 @@
             ctx.putImageData(imgdata, 0, 0);
             src = canvas.toDataURL();
         }
+        /* 通过download下载 */
         function saveFile() {
             if (src === '') {
                 return;
@@ -55,7 +57,6 @@
             var dlLink = document.createElement('a');
             dlLink.download = (new Date()).getTime() + '.jpg';
             dlLink.href = src;
-            dlLink.dataset.downloadurl = ['image/png', dlLink.download, dlLink.href].join(':');
             document.body.appendChild(dlLink);
             dlLink.click();
             document.body.removeChild(dlLink);
