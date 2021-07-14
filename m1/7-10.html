@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="file" id="imgFile" onchange="inputChange(this)" accept=".png, .jpg" />
+    <input type="submit" value="转灰度" onclick="gray()"/>
+    <input type="submit" value="保存" onclick="saveFile()" />
+    <div>
+        <img src="" id="show" width="auto">
+        <canvas id="canvas"></canvas>
+    </div>
+    <script>
+        var src = '';
+
+        function inputChange(obj) {
+            let _url = window.URL || window.webkitURL
+            var file = obj.files[0];
+            var fs = new FileReader();
+            src = document.getElementById('show').src = _url.createObjectURL(file);
+        }
+
+        function gray() {
+            if (src === '') {
+                return;
+            }
+            var canvas = document.getElementById('canvas');
+            var ctx = canvas.getContext('2d');
+            var img = new Image();
+            img.src = src;
+            canvas.height = img.height;
+            canvas.width = img.width;
+            
+            ctx.drawImage(img, 0, 0);
+            var imgdata = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            var data = imgdata.data;
+
+            for (var i = 0, n = data.length; i < n; i += 4) {
+                var average = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                data[i] = average;
+                data[i + 1] = average;
+                data[i + 2] = average;
+            }
+            ctx.putImageData(imgdata, 0, 0);
+            src = canvas.toDataURL();
+        }
+        function saveFile() {
+            if (src === '') {
+                return;
+            }
+            var dlLink = document.createElement('a');
+            dlLink.download = (new Date()).getTime() + '.jpg';
+            dlLink.href = src;
+            dlLink.dataset.downloadurl = ['image/png', dlLink.download, dlLink.href].join(':');
+            document.body.appendChild(dlLink);
+            dlLink.click();
+            document.body.removeChild(dlLink);
+        }
+    </script>
+</body>
+</html>
