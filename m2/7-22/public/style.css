@@ -1,0 +1,17 @@
+* { 
+    margin: 0;
+    padding: 0;
+}
+.main {
+    width: 100%;
+    display: flex;
+}
+.main .monaco-box, .main .iframe-box {
+    flex: 1;
+}
+.main .monaco-box {
+    margin-right: 5px;
+}
+.main .iframe-box {
+    border: 1px solid #000;
+}
